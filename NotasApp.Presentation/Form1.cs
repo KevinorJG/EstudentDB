@@ -17,7 +17,8 @@ namespace NotasApp.Presentation
     {
         private IEstudianteServices estudianteServices;
         int selection = -1;
-        string idEstudent = String.Empty;
+        string CarnetEstudent = String.Empty;
+        public static float promedio = 0;
         public Form1(IEstudianteServices estudianteServices)
         {
             this.estudianteServices = estudianteServices;
@@ -61,10 +62,10 @@ namespace NotasApp.Presentation
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if(textName.TextLength == 0 
-                || textLastName.TextLength == 0 
-                || textCarnet.TextLength == 0 
-                || textEmail.TextLength == 0 
+            if (textName.TextLength == 0
+                || textLastName.TextLength == 0
+                || textCarnet.TextLength == 0
+                || textEmail.TextLength == 0
                 || textPhone.TextLength == 0
                 || textAdress.TextLength == 0
                 || textBoxCalculo.TextLength == 0
@@ -72,8 +73,8 @@ namespace NotasApp.Presentation
                 || textBoxEstadistica.TextLength == 0
                 || textBoxProg.TextLength == 0)
             {
-                MessageBox.Show("Porfavor llene todos los datos","Ingreso de datos no completado",MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+                MessageBox.Show("Porfavor llene todos los datos", "Ingreso de datos no completado", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            } 
             else
             {
                 Estudiante estudiante = new Estudiante()
@@ -102,15 +103,14 @@ namespace NotasApp.Presentation
 
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
-            string Value = Interaction.InputBox("Ingrese el ID a buscar","Busqueda por carnet");
+            string Value = Interaction.InputBox("Ingrese el Carnet del estudiante a buscar","Busqueda por carnet");
             if (!String.IsNullOrEmpty(Value))
             {
-                idEstudent = Value;
+                CarnetEstudent = Value;
                 string carnet = Value;
                 ViewEstudent(carnet);
             }
-            toolStripButtonUpdate.Enabled = true;
-            toolStripButtonDelete.Enabled = true;
+            
         }
 
         public void ViewEstudent(string carnet)
@@ -124,7 +124,12 @@ namespace NotasApp.Presentation
             }
             else
             {
+           
+                toolStripButtonUpdate.Enabled = true;
+                toolStripButtonDelete.Enabled = true;
                 var estudiante = estudianteServices.FindByCarnet(carnet);
+                promedio = funcPromedio(estudiante);
+                LoadEstudent(true);
 
                 textName.Text = estudiante.Nombres;
                 textLastName.Text = estudiante.Apellidos;
@@ -161,6 +166,9 @@ namespace NotasApp.Presentation
         private void toolStripButtonCancell_Click(object sender, EventArgs e)
         {
             Clean();
+            LoadEstudent(false);
+            toolStripButtonUpdate.Enabled = false;
+            toolStripButtonDelete.Enabled = false;
             groupBox1.Enabled=true;
         }
 
@@ -168,11 +176,16 @@ namespace NotasApp.Presentation
         {
             if (MessageBox.Show("¿Desea eliminar este registro?", "Advertencia", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
-                var estudiante = estudianteServices.FindByCarnet(idEstudent);
+                var estudiante = estudianteServices.FindByCarnet(CarnetEstudent);
                 estudianteServices.Delete(estudiante);
                 Clean();
                 LoadData();
+                LoadEstudent(false);
+                toolStripButtonUpdate.Enabled = false;
+                toolStripButtonDelete.Enabled = false;
+                groupBox1.Enabled = true;
             }
+            
         }
 
         private void borrarToolStripMenuItem_Click(object sender, EventArgs e)
@@ -207,8 +220,8 @@ namespace NotasApp.Presentation
         {
             if (MessageBox.Show("¿Desea realizar el cambio?", "Advertencia", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
-                var estudiante = estudianteServices.FindByCarnet(idEstudent);
-
+                var estudiante = estudianteServices.FindByCarnet(CarnetEstudent);
+                LoadEstudent(false);
                 estudiante.Nombres = textName.Text;
                 estudiante.Apellidos = textLastName.Text;
                 estudiante.Carnet = textCarnet.Text;
@@ -217,10 +230,26 @@ namespace NotasApp.Presentation
                 estudiante.Correo = textEmail.Text;
 
                 estudianteServices.Update(estudiante);
+                LoadData();
+                Clean();
+                groupBox1.Enabled = true;
+                toolStripButtonUpdate.Enabled = false;
+                toolStripButtonDelete.Enabled = false;
             }
-            LoadData();
-            Clean();
-            groupBox1.Enabled = true;
+            
+        }
+
+        private void textCarnet_TextChanged(object sender, EventArgs e)
+        {
+            if(textCarnet.Text.Length > 12)
+            {
+                errorProvider1.SetError(this.textCarnet, "Supera el tamaño de caracteres");
+                
+            }
+            else
+            {
+                errorProvider1.Clear();
+            }
         }
     }
 }

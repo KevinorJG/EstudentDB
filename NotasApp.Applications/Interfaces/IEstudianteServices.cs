@@ -14,5 +14,6 @@ namespace NotasApp.Applications.Interfaces
         Estudiante FindByEmail(string email);
         List<Estudiante> FindByName(string name);
         Estudiante FindByCarnet(string carnet);
+       
     }
 }

@@ -61,11 +61,13 @@
             this.toolStripButtonUpdate = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonDelete = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonCancell = new System.Windows.Forms.ToolStripButton();
+            this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
             this.groupBoxDatosPersonales.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgEstudiantes)).BeginInit();
             this.MenuEstudent.SuspendLayout();
             this.toolStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -143,6 +145,7 @@
             this.textCarnet.Name = "textCarnet";
             this.textCarnet.Size = new System.Drawing.Size(144, 23);
             this.textCarnet.TabIndex = 8;
+            this.textCarnet.TextChanged += new System.EventHandler(this.textCarnet_TextChanged);
             // 
             // textPhone
             // 
@@ -365,6 +368,10 @@
             this.toolStripButtonCancell.Text = "Cancelar";
             this.toolStripButtonCancell.Click += new System.EventHandler(this.toolStripButtonCancell_Click);
             // 
+            // errorProvider1
+            // 
+            this.errorProvider1.ContainerControl = this;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -389,9 +396,21 @@
             this.MenuEstudent.ResumeLayout(false);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
+        }
+        private void LoadEstudent(bool value) 
+        {
+            if (value)
+            {
+                this.Text = "Promedio del estudiante " + Form1.promedio;
+            }
+            else
+            {
+                this.Text = "Registro de notas";
+            }
         }
 
         #endregion
@@ -428,5 +447,6 @@
         private System.Windows.Forms.ToolStripMenuItem promedioToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem borrarToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton toolStripButtonCancell;
+        private System.Windows.Forms.ErrorProvider errorProvider1;
     }
 }
