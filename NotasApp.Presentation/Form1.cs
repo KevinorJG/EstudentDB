@@ -17,7 +17,7 @@ namespace NotasApp.Presentation
     {
         private IEstudianteServices estudianteServices;
         int selection = -1;
-        int idEstudent;
+        string idEstudent = String.Empty;
         public Form1(IEstudianteServices estudianteServices)
         {
             this.estudianteServices = estudianteServices;
@@ -28,6 +28,8 @@ namespace NotasApp.Presentation
         {
             LoadData();
             dgEstudiantes.ReadOnly = true;
+            toolStripButtonUpdate.Enabled = false;
+            toolStripButtonDelete.Enabled = false;
           
         }
 
@@ -43,14 +45,17 @@ namespace NotasApp.Presentation
 
         private void promedioToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if(dgEstudiantes.RowCount > 0)
+            {
+                Estudiante estudiante = estudianteServices.FindById(GetItemSelect());
+                MessageBox.Show($"Estudiante {estudiante.Nombres} " +
+                                $"{estudiante.Apellidos}\n" +
+                                $"Carnet: {estudiante.Carnet}\n" +
+                                $"Promedio total:{funcPromedio(estudiante)}",
+                                "Información de estudiante", MessageBoxButtons.OK);
+                dgEstudiantes.ClearSelection();
+            }
             
-            Estudiante estudiante = estudianteServices.FindById(GetItemSelect());          
-            MessageBox.Show($"Estudiante {estudiante.Nombres} " +
-                            $"{estudiante.Apellidos}\n" +
-                            $"Carnet: {estudiante.Carnet}\n" +
-                            $"Promedio total:{funcPromedio(estudiante)}",
-                            "Información de estudiante",MessageBoxButtons.OK);
-            dgEstudiantes.ClearSelection();
 
         }
 
@@ -100,10 +105,12 @@ namespace NotasApp.Presentation
             string Value = Interaction.InputBox("Ingrese el ID a buscar","Busqueda por carnet");
             if (!String.IsNullOrEmpty(Value))
             {
-                idEstudent = int.Parse(Value);
+                idEstudent = Value;
                 string carnet = Value;
                 ViewEstudent(carnet);
             }
+            toolStripButtonUpdate.Enabled = true;
+            toolStripButtonDelete.Enabled = true;
         }
 
         public void ViewEstudent(string carnet)
@@ -161,7 +168,7 @@ namespace NotasApp.Presentation
         {
             if (MessageBox.Show("¿Desea eliminar este registro?", "Advertencia", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
-                var estudiante = estudianteServices.FindById(idEstudent);
+                var estudiante = estudianteServices.FindByCarnet(idEstudent);
                 estudianteServices.Delete(estudiante);
                 Clean();
                 LoadData();
@@ -173,7 +180,7 @@ namespace NotasApp.Presentation
             try
             {
                 
-                if(dgEstudiantes.RowCount != -1)
+                if(dgEstudiantes.RowCount > 0)
                 {
                     if (MessageBox.Show("¿Desea eliminar este registro?", "Advertencia", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                     {
@@ -184,15 +191,36 @@ namespace NotasApp.Presentation
                         LoadData();
                     }
                 }
+                
             }
             catch
             {
-                MessageBox.Show("No seleccionó ningun registro", "Verifique", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw;
             }
             
         }
         public Func<Estudiante, float> funcPromedio = (x) => (x.Estadistica + x.Contabilidad + x.Matematica + x.Programacion) / 4;
 
         public int GetItemSelect() => (int) dgEstudiantes.Rows[selection].Cells[0].Value;
+
+        private void toolStripButtonUpdate_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("¿Desea realizar el cambio?", "Advertencia", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+            {
+                var estudiante = estudianteServices.FindByCarnet(idEstudent);
+
+                estudiante.Nombres = textName.Text;
+                estudiante.Apellidos = textLastName.Text;
+                estudiante.Carnet = textCarnet.Text;
+                estudiante.Phone = textPhone.Text;
+                estudiante.Direccion = textAdress.Text;
+                estudiante.Correo = textEmail.Text;
+
+                estudianteServices.Update(estudiante);
+            }
+            LoadData();
+            Clean();
+            groupBox1.Enabled = true;
+        }
     }
 }

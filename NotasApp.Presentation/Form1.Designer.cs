@@ -300,7 +300,7 @@
             this.promedioToolStripMenuItem,
             this.borrarToolStripMenuItem});
             this.MenuEstudent.Name = "MenuEstudent";
-            this.MenuEstudent.Size = new System.Drawing.Size(181, 70);
+            this.MenuEstudent.Size = new System.Drawing.Size(127, 48);
             // 
             // promedioToolStripMenuItem
             // 
@@ -312,7 +312,7 @@
             // borrarToolStripMenuItem
             // 
             this.borrarToolStripMenuItem.Name = "borrarToolStripMenuItem";
-            this.borrarToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.borrarToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
             this.borrarToolStripMenuItem.Text = "Borrar";
             this.borrarToolStripMenuItem.Click += new System.EventHandler(this.borrarToolStripMenuItem_Click);
             // 
@@ -345,6 +345,7 @@
             this.toolStripButtonUpdate.Name = "toolStripButtonUpdate";
             this.toolStripButtonUpdate.Size = new System.Drawing.Size(79, 22);
             this.toolStripButtonUpdate.Text = "Actualizar";
+            this.toolStripButtonUpdate.Click += new System.EventHandler(this.toolStripButtonUpdate_Click);
             // 
             // toolStripButtonDelete
             // 
