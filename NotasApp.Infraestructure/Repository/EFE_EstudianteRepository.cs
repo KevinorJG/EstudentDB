@@ -20,46 +20,143 @@ namespace NotasApp.Infraestructure.Repository
 
         public void Create(Estudiante t)
         {
-            schoolContext.Estudent.Add(t);
-            schoolContext.SaveChanges();
+            try
+            {
+                if (t == null)
+                {
+                    throw new Exception("Este objeto no puede ser nulo");
+                }
+                schoolContext.Estudent.Add(t);
+                schoolContext.SaveChanges();
+            }
+            catch
+            {
+                throw;
+            }
+            
         }
 
         public bool Delete(Estudiante t)
         {
-            schoolContext.Estudent.Remove(t);
-            int result = schoolContext.SaveChanges();
-            return result > 0;
+            try
+            {
+                if (t == null)
+                {
+                    throw new Exception("Este objeto no puede ser nulo");
+                }
+                Estudiante estudiante = FindById(t.Id);
+                if (estudiante == null)
+                {
+                    throw new Exception("este objeto no existe");
+                }
+                schoolContext.Estudent.Remove(t);
+                int result = schoolContext.SaveChanges();
+                return result > 0;
+            }
+            catch
+            {
+                throw;
+            }
+            
         }
 
         public Estudiante FindByCarnet(string carnet)
         {
-            return schoolContext.Estudent.FirstOrDefault(x => x.Carnet == carnet);
+            try
+            {
+                if (String.IsNullOrWhiteSpace(carnet))
+                {
+                    throw new ArgumentNullException("dato inválido");
+                }
+                return schoolContext.Estudent.FirstOrDefault(x => x.Carnet == carnet);
+            }
+            catch
+            {
+                throw;
+            }
+            
         }
 
         public Estudiante FindByEmail(string email)
         {
-            return schoolContext.Estudent.FirstOrDefault(x => x.Correo == email);
+            try
+            {
+                if (string.IsNullOrWhiteSpace(email))
+                {
+                    throw new ArgumentNullException("email inválido");
+                }
+                return schoolContext.Estudent.FirstOrDefault(x => x.Correo == email);
+            }
+            catch
+            {
+                throw;
+            }
+            
         }
 
         public Estudiante FindById(int id)
         {
-            return schoolContext.Estudent.FirstOrDefault(x => x.Id == id);
+            try
+            {
+                if (id <= 0)
+                {
+                    throw new ArgumentNullException("este dato no es válido");
+                }
+                return schoolContext.Estudent.FirstOrDefault(x => x.Id == id);
+            }
+            catch
+            {
+                throw;
+            }
+           
         }
 
         public List<Estudiante> FindByName(string name)
         {
-            return schoolContext.Estudent.Where(e => e.Nombres.Equals(name, StringComparison.CurrentCultureIgnoreCase)).ToList();
+            try
+            {
+                if (String.IsNullOrWhiteSpace(name))
+                {
+                    throw new ArgumentNullException("este dato no es válido");
+                }
+                return schoolContext.Estudent.Where(e => e.Nombres.Equals(name, StringComparison.CurrentCultureIgnoreCase)).ToList();
+            }
+            catch
+            {
+                throw;
+            }
+           
         }
 
         public List<Estudiante> GetAll()
         {
-           return schoolContext.Estudent.ToList();
+            try
+            {
+                return schoolContext.Estudent.ToList();
+            }
+            catch
+            {
+                throw;
+            }
+          
         }
 
         public int Update(Estudiante t)
         {
-            schoolContext.Estudent.Update(t);
-            return schoolContext.SaveChanges();
+            try
+            {
+                if(t == null)
+                {
+                    throw new Exception("Este objeto no puede ser nulo");
+                }
+                schoolContext.Estudent.Update(t);
+                return schoolContext.SaveChanges();
+            }
+            catch
+            {
+                throw;
+            }
+            
         }
     }
 }
